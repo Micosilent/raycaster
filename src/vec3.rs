@@ -1,28 +1,41 @@
-use std::ops::{Add, Div, Sub};
-
+use std::ops::{Add, Div, Mul, Sub};
+#[derive(Copy, Clone)]
 pub struct Vector3 {
-    x: usize,
-    y: usize,
-    z: usize,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 impl Vector3 {
-    pub fn new(x: usize, y: usize, z: usize) -> Self {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
     }
-    pub fn as_array(&self) -> [usize; 3] {
+    pub fn as_array(&self) -> [f64; 3] {
         [self.x, self.y, self.z]
     }
 }
 
+//Overloads
 impl Add for Vector3 {
     type Output = Self;
 
-    fn add(self, right_hand_side: Vector3) -> Vector3 {
+    fn add(self, rhs: Vector3) -> Self::Output {
         Self {
-            x: self.x + right_hand_side.x,
-            y: self.y + right_hand_side.y,
-            z: self.z + right_hand_side.z,
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+            z: self.z + rhs.z,
+        }
+    }
+}
+
+impl Add<f64> for Vector3 {
+    type Output = Self;
+
+    fn add(self, rhs: f64) -> Self::Output {
+        Self {
+            x: self.x + rhs,
+            y: self.y + rhs,
+            z: self.z + rhs,
         }
     }
 }
@@ -38,15 +51,38 @@ impl Sub for Vector3 {
         }
     }
 }
+impl Mul for Vector3 {
+    type Output = Self;
+
+    fn mul(self, rhs: Vector3) -> Self::Output {
+        Self {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+            z: self.z * rhs.z,
+        }
+    }
+}
+
+impl Mul<f64> for Vector3 {
+    type Output = Self;
+
+    fn mul(self, rhs: f64) -> Self::Output {
+        Self {
+            x: self.x * rhs,
+            y: self.y * rhs,
+            z: self.z * rhs,
+        }
+    }
+}
 pub enum DivError {
     DivByZeroError,
 }
 
-impl Div<usize> for Vector3 {
+impl Div<f64> for Vector3 {
     type Output = Result<Vector3, DivError>;
 
-    fn div(self, rhs: usize) -> Self::Output {
-        if rhs == 0 {
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 {
             return Err(DivError::DivByZeroError);
         }
 

@@ -1,5 +1,5 @@
 [package]
-name = "RustyRayTracer"
+name = "rusty_raytracer"
 version = "0.1.0"
 edition = "2021"
 
