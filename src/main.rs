@@ -64,10 +64,20 @@ fn main() {
 }
 
 fn ray_color(ray: Ray) -> Color {
+    if hit_sphere(Point::new(0.0, 0.0, -1.0), 0.5, ray) {
+        return Color::new(1.0, 0.0, 0.0);
+    }
+
     let unit_direction: Vector3 = ray.direction.unit();
     let t = 0.5 * (unit_direction.y + 1.0);
 
     let vector: Vector3 = Vector3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vector3::new(0.5, 0.7, 1.0) * t;
 
     return Color::new(vector.x, vector.y, vector.z);
+}
+
+fn hit_sphere(center: Point, sphere_radius: f64, ray: Ray) -> bool {
+    let distance = ray.distance_to_point(center);
+
+    return distance <= sphere_radius;
 }
