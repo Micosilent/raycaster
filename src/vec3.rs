@@ -29,6 +29,14 @@ impl Vector3 {
             z: self.x * rhs.y - self.y * rhs.x,
         }
     }
+    pub fn unit(self) -> Vector3 {
+        let unit_result = self / self.magnitude();
+
+        match unit_result {
+            Ok(result) => return result,
+            Err(err) => panic!("Cannot divide by 0"),
+        }
+    }
 }
 //Overloads
 impl Add for Vector3 {
@@ -77,7 +85,6 @@ impl Mul for Vector3 {
         }
     }
 }
-//this
 impl Mul<f64> for Vector3 {
     type Output = Self;
 
@@ -89,10 +96,10 @@ impl Mul<f64> for Vector3 {
         }
     }
 }
+#[derive(Debug)]
 pub enum DivError {
     DivByZeroError,
 }
-//this
 impl Div<f64> for Vector3 {
     type Output = Result<Vector3, DivError>;
 

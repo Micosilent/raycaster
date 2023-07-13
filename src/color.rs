@@ -1,9 +1,7 @@
-use std::string;
-
 use crate::vec3::Vector3;
 #[derive(Copy, Clone)]
 pub struct Color {
-    vector: Vector3,
+    pub vector: Vector3,
 }
 
 impl Color {
