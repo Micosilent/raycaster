@@ -13,8 +13,23 @@ impl Vector3 {
     pub fn as_array(&self) -> [f64; 3] {
         [self.x, self.y, self.z]
     }
+    pub fn magnitude_squared(&self) -> f64 {
+        self.dot(*self)
+    }
+    pub fn magnitude(&self) -> f64 {
+        self.magnitude_squared().sqrt()
+    }
+    pub fn dot(self, rhs: Vector3) -> f64 {
+        (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z)
+    }
+    pub fn cross(self, rhs: Vector3) -> Vector3 {
+        Vector3 {
+            x: self.y * rhs.z - self.z * rhs.y,
+            y: self.z * rhs.x - self.x * rhs.z,
+            z: self.x * rhs.y - self.y * rhs.x,
+        }
+    }
 }
-
 //Overloads
 impl Add for Vector3 {
     type Output = Self;
@@ -62,7 +77,7 @@ impl Mul for Vector3 {
         }
     }
 }
-
+//this
 impl Mul<f64> for Vector3 {
     type Output = Self;
 
@@ -77,7 +92,7 @@ impl Mul<f64> for Vector3 {
 pub enum DivError {
     DivByZeroError,
 }
-
+//this
 impl Div<f64> for Vector3 {
     type Output = Result<Vector3, DivError>;
 

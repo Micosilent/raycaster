@@ -1,6 +1,7 @@
 use std::fs;
 
 mod color;
+mod point;
 mod vec3;
 
 use crate::color::Color;
