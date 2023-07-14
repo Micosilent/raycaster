@@ -20,4 +20,23 @@ impl Ray {
 
         return d.magnitude();
     }
+    pub fn intersection_to_sphere(self, sphere_center: Point, sphere_radius: f64) -> Vec<Point> {
+        let mut points: Vec<Point> = Vec::new();
+
+        let v: Vector3 = sphere_center.vector - self.origin;
+        let u: Vector3 = self.direction;
+
+        let d: Vector3 = u * (v.dot(u) / u.magnitude_squared()) - v;
+
+        if d.magnitude() == sphere_radius {
+            points.push(sphere_center.get_translated(d));
+        } else if d.magnitude() < sphere_radius {
+            let x = (sphere_radius.powf(2.0) - d.magnitude_squared()).sqrt();
+
+            points.push(sphere_center.get_translated(d + ((u * x) / u.magnitude()).unwrap()));
+            points.push(sphere_center.get_translated(d - ((u * x) / u.magnitude()).unwrap()));
+        }
+
+        points
+    }
 }

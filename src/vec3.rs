@@ -1,4 +1,6 @@
 use std::ops::{Add, Div, Mul, Sub};
+
+use crate::point::Point;
 #[derive(Copy, Clone)]
 pub struct Vector3 {
     pub x: f64,
@@ -9,6 +11,13 @@ pub struct Vector3 {
 impl Vector3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
+    }
+    pub fn new_from_2_points(a: Point, b: Point) -> Self {
+        Self {
+            x: b.vector.x - a.vector.x,
+            y: b.vector.y - a.vector.y,
+            z: b.vector.z - a.vector.z,
+        }
     }
     pub fn as_array(&self) -> [f64; 3] {
         [self.x, self.y, self.z]
