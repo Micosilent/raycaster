@@ -1,12 +1,16 @@
 use std::fs;
 
 mod color;
+mod hit;
 mod point;
 mod ray;
+mod sphere;
 mod vec3;
 
+use hit::Hittable;
 use point::Point;
 use ray::Ray;
+use sphere::Sphere;
 use vec3::Vector3;
 
 use crate::color::Color;
@@ -49,7 +53,7 @@ fn main() {
             let direction = lower_left_corner + horizontal * u + vertical * v - origin.vector;
             let ray = Ray::new(origin.vector, direction);
 
-            let mut pixel_color = ray_color(ray, origin);
+            let mut pixel_color = ray_color(ray);
 
             pixel_color.scale();
 
@@ -60,32 +64,24 @@ fn main() {
     fs::write("./firstImage.ppm", data).expect("Unable to write file");
 }
 
-fn ray_color(ray: Ray, camera_origin: Point) -> Color {
-    let sphere_center = Point::new(0.0, 0.0, -1.0);
-    let sphere_radius = 0.5;
+fn ray_color(ray: Ray) -> Color {
+    let sphere = Sphere {
+        center: Point::new(0.0, 0.0, -1.0),
+        radius: 0.5,
+    };
 
-    let intersection_points = ray.intersection_to_sphere(sphere_center, sphere_radius);
     let color_vector: Vector3;
 
-    if intersection_points.len() == 0 {
-        let unit_direction: Vector3 = ray.direction.unit();
-        let t = 0.5 * (unit_direction.y + 1.0);
+    let hit_record = sphere.hit(ray, 1.0, 1.0);
 
-        color_vector = Vector3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vector3::new(0.5, 0.7, 1.0) * t;
-    } else if intersection_points.len() == 1 {
-        let normal_vector = Vector3::new_from_2_points(sphere_center, intersection_points[0]);
-        color_vector = normal_to_color_vector(normal_vector)
-    } else {
-        let normal_vector_0 = Vector3::new_from_2_points(sphere_center, intersection_points[0]);
-        let normal_vector_1 = Vector3::new_from_2_points(sphere_center, intersection_points[1]);
+    match hit_record {
+        Some(hit_record) => color_vector = normal_to_color_vector(hit_record.normal_vector),
+        None => {
+            let unit_direction: Vector3 = ray.direction.unit();
+            let t = 0.5 * (unit_direction.y + 1.0);
 
-        let origin_to_intersection_0 =
-            Vector3::new_from_2_points(camera_origin, intersection_points[0]);
-
-        if normal_vector_0.dot(origin_to_intersection_0) < 0.0 {
-            color_vector = normal_to_color_vector(normal_vector_0)
-        } else {
-            color_vector = normal_to_color_vector(normal_vector_1)
+            color_vector =
+                Vector3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vector3::new(0.5, 0.7, 1.0) * t;
         }
     }
 
@@ -93,11 +89,6 @@ fn ray_color(ray: Ray, camera_origin: Point) -> Color {
         vector: color_vector,
     };
 }
-
-// if (t > 0.0) {
-//     vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
-//     return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
-// }
 
 fn normal_to_color_vector(normal_vector: Vector3) -> Vector3 {
     let unit_vector = normal_vector.unit();

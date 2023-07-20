@@ -20,6 +20,7 @@ impl Ray {
 
         return d.magnitude();
     }
+
     pub fn intersection_to_sphere(self, sphere_center: Point, sphere_radius: f64) -> Vec<Point> {
         let mut points: Vec<Point> = Vec::new();
 
